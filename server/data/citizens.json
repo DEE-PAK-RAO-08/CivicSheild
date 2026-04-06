@@ -1,0 +1,347 @@
+[
+  {
+    "Citizen_ID": "CIT-001",
+    "Name": "Aarav Sharma",
+    "Account_Status": "Active",
+    "Aadhaar_Linked": true,
+    "Scheme": "PM-KISAN",
+    "Amount": 6000,
+    "Region_Code": "R01",
+    "Income_Tier": "BPL",
+    "Claim_Count": 1,
+    "Last_Claim_Date": "2026-04-06T15:34:16.110Z",
+    "Trust_Score": 95,
+    "Trust_History": [
+      {
+        "date": "2026-04-06T03:14:30.818Z",
+        "score": 90,
+        "reason": "Successful claim — trust recovered"
+      },
+      {
+        "date": "2026-04-06T03:16:03.103Z",
+        "score": 65,
+        "reason": "Replay attack detected — same request within 10 minutes",
+        "penalty": -25
+      },
+      {
+        "date": "2026-04-06T14:44:12.568Z",
+        "score": 95,
+        "reason": "Successful claim — trust recovered"
+      },
+      {
+        "date": "2026-04-06T14:45:39.365Z",
+        "score": 95,
+        "reason": "Successful claim — trust recovered"
+      },
+      {
+        "date": "2026-04-06T14:47:19.416Z",
+        "score": 65,
+        "reason": "Replay attack simulation",
+        "penalty": -25
+      },
+      {
+        "date": "2026-04-06T15:15:35.100Z",
+        "score": 95,
+        "reason": "Successful claim — trust recovered"
+      },
+      {
+        "date": "2026-04-06T15:22:51.727Z",
+        "score": 95,
+        "reason": "Successful claim — trust recovered"
+      },
+      {
+        "date": "2026-04-06T15:23:10.620Z",
+        "score": 70,
+        "reason": "Replay attack simulation",
+        "penalty": -25
+      },
+      {
+        "date": "2026-04-06T15:24:08.368Z",
+        "score": 95,
+        "reason": "Successful claim — trust recovered"
+      },
+      {
+        "date": "2026-04-06T15:31:30.608Z",
+        "score": 65,
+        "reason": "Replay attack simulation",
+        "penalty": -25
+      },
+      {
+        "date": "2026-04-06T15:33:16.634Z",
+        "score": 95,
+        "reason": "Successful claim — trust recovered"
+      },
+      {
+        "date": "2026-04-06T15:33:37.268Z",
+        "score": 70,
+        "reason": "Replay attack simulation",
+        "penalty": -25
+      },
+      {
+        "date": "2026-04-06T15:34:16.110Z",
+        "score": 95,
+        "reason": "Successful claim — trust recovered"
+      }
+    ]
+  },
+  {
+    "Citizen_ID": "CIT-002",
+    "Name": "Priya Patel",
+    "Account_Status": "Active",
+    "Aadhaar_Linked": true,
+    "Scheme": "PMJDY",
+    "Amount": 5000,
+    "Region_Code": "R02",
+    "Income_Tier": "LIG",
+    "Claim_Count": 0,
+    "Last_Claim_Date": null,
+    "Trust_Score": 90,
+    "Trust_History": [
+      {
+        "date": "2026-02-01",
+        "score": 80,
+        "reason": "Successful claim"
+      },
+      {
+        "date": "2026-04-06T15:18:54.390Z",
+        "score": 95,
+        "reason": "Successful claim — trust recovered"
+      },
+      {
+        "date": "2026-04-06T15:19:04.960Z",
+        "score": 70,
+        "reason": "Replay attack detected — same request within 10 minutes",
+        "penalty": -25
+      }
+    ]
+  },
+  {
+    "Citizen_ID": "CIT-003",
+    "Name": "Rahul Verma",
+    "Account_Status": "Active",
+    "Aadhaar_Linked": false,
+    "Scheme": "PM-KISAN",
+    "Amount": 6000,
+    "Region_Code": "R01",
+    "Income_Tier": "BPL",
+    "Claim_Count": 0,
+    "Last_Claim_Date": null,
+    "Trust_Score": 90,
+    "Trust_History": []
+  },
+  {
+    "Citizen_ID": "CIT-004",
+    "Name": "Sanya Gupta",
+    "Account_Status": "Inactive",
+    "Aadhaar_Linked": true,
+    "Scheme": "PMJDY",
+    "Amount": 5000,
+    "Region_Code": "R03",
+    "Income_Tier": "MIG",
+    "Claim_Count": 0,
+    "Last_Claim_Date": null,
+    "Trust_Score": 50,
+    "Trust_History": [
+      {
+        "date": "2026-01-15",
+        "score": 50,
+        "reason": "Account flagged"
+      }
+    ]
+  },
+  {
+    "Citizen_ID": "CIT-005",
+    "Name": "Vikram Singh",
+    "Account_Status": "Active",
+    "Aadhaar_Linked": true,
+    "Scheme": "MGNREGA",
+    "Amount": 8000,
+    "Region_Code": "R04",
+    "Income_Tier": "BPL",
+    "Claim_Count": 0,
+    "Last_Claim_Date": null,
+    "Trust_Score": 90,
+    "Trust_History": [
+      {
+        "date": "2026-04-06T14:50:18.288Z",
+        "score": 95,
+        "reason": "Successful claim — trust recovered"
+      },
+      {
+        "date": "2026-04-06T15:30:59.041Z",
+        "score": 95,
+        "reason": "Successful claim — trust recovered"
+      }
+    ]
+  },
+  {
+    "Citizen_ID": "CIT-006",
+    "Name": "Anisha Das",
+    "Account_Status": "Active",
+    "Aadhaar_Linked": true,
+    "Scheme": "PM-KISAN",
+    "Amount": 6000,
+    "Region_Code": "R02",
+    "Income_Tier": "BPL",
+    "Claim_Count": 0,
+    "Last_Claim_Date": null,
+    "Trust_Score": 70,
+    "Trust_History": [
+      {
+        "date": "2026-03-20",
+        "score": 70,
+        "reason": "Max claims approaching"
+      }
+    ]
+  },
+  {
+    "Citizen_ID": "CIT-007",
+    "Name": "Karan Mehta",
+    "Account_Status": "Active",
+    "Aadhaar_Linked": true,
+    "Scheme": "PMJDY",
+    "Amount": 5000,
+    "Region_Code": "R05",
+    "Income_Tier": "LIG",
+    "Claim_Count": 0,
+    "Last_Claim_Date": null,
+    "Trust_Score": 90,
+    "Trust_History": []
+  },
+  {
+    "Citizen_ID": "CIT-008",
+    "Name": "Meera Nair",
+    "Account_Status": "Active",
+    "Aadhaar_Linked": true,
+    "Scheme": "MGNREGA",
+    "Amount": 8000,
+    "Region_Code": "R03",
+    "Income_Tier": "BPL",
+    "Claim_Count": 0,
+    "Last_Claim_Date": null,
+    "Trust_Score": 90,
+    "Trust_History": [
+      {
+        "date": "2026-02-10",
+        "score": 82,
+        "reason": "Successful claim"
+      }
+    ]
+  },
+  {
+    "Citizen_ID": "CIT-009",
+    "Name": "Arjun Reddy",
+    "Account_Status": "Active",
+    "Aadhaar_Linked": true,
+    "Scheme": "PM-UJJWALA",
+    "Amount": 3200,
+    "Region_Code": "R01",
+    "Income_Tier": "BPL",
+    "Claim_Count": 0,
+    "Last_Claim_Date": null,
+    "Trust_Score": 90,
+    "Trust_History": []
+  },
+  {
+    "Citizen_ID": "CIT-010",
+    "Name": "Fatima Sheikh",
+    "Account_Status": "Active",
+    "Aadhaar_Linked": true,
+    "Scheme": "PMJDY",
+    "Amount": 5000,
+    "Region_Code": "R04",
+    "Income_Tier": "LIG",
+    "Claim_Count": 0,
+    "Last_Claim_Date": null,
+    "Trust_Score": 45,
+    "Trust_History": [
+      {
+        "date": "2026-03-01",
+        "score": 45,
+        "reason": "Multiple claims"
+      }
+    ]
+  },
+  {
+    "Citizen_ID": "CIT-011",
+    "Name": "Ravi Kumar",
+    "Account_Status": "Active",
+    "Aadhaar_Linked": true,
+    "Scheme": "PM-KISAN",
+    "Amount": 6000,
+    "Region_Code": "R05",
+    "Income_Tier": "BPL",
+    "Claim_Count": 0,
+    "Last_Claim_Date": null,
+    "Trust_Score": 90,
+    "Trust_History": []
+  },
+  {
+    "Citizen_ID": "CIT-012",
+    "Name": "Deepika Joshi",
+    "Account_Status": "Active",
+    "Aadhaar_Linked": true,
+    "Scheme": "MGNREGA",
+    "Amount": 8000,
+    "Region_Code": "R02",
+    "Income_Tier": "BPL",
+    "Claim_Count": 0,
+    "Last_Claim_Date": null,
+    "Trust_Score": 20,
+    "Trust_History": [
+      {
+        "date": "2026-01-25",
+        "score": 20,
+        "reason": "Fraudulent activity detected"
+      }
+    ]
+  },
+  {
+    "Citizen_ID": "CIT-013",
+    "Name": "Nikhil Chauhan",
+    "Account_Status": "Active",
+    "Aadhaar_Linked": true,
+    "Scheme": "PM-UJJWALA",
+    "Amount": 3200,
+    "Region_Code": "R03",
+    "Income_Tier": "BPL",
+    "Claim_Count": 0,
+    "Last_Claim_Date": null,
+    "Trust_Score": 90,
+    "Trust_History": []
+  },
+  {
+    "Citizen_ID": "CIT-014",
+    "Name": "Sunita Devi",
+    "Account_Status": "Active",
+    "Aadhaar_Linked": true,
+    "Scheme": "PM-KISAN",
+    "Amount": 6000,
+    "Region_Code": "R04",
+    "Income_Tier": "BPL",
+    "Claim_Count": 0,
+    "Last_Claim_Date": null,
+    "Trust_Score": 90,
+    "Trust_History": []
+  },
+  {
+    "Citizen_ID": "CIT-015",
+    "Name": "Amir Khan",
+    "Account_Status": "Active",
+    "Aadhaar_Linked": true,
+    "Scheme": "PMJDY",
+    "Amount": 5000,
+    "Region_Code": "R05",
+    "Income_Tier": "MIG",
+    "Claim_Count": 0,
+    "Last_Claim_Date": null,
+    "Trust_Score": 90,
+    "Trust_History": [
+      {
+        "date": "2026-02-20",
+        "score": 73,
+        "reason": "Successful claim"
+      }
+    ]
+  }
+]

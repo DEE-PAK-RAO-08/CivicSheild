@@ -1,0 +1,21 @@
+[
+  {
+    "TransactionID": "TXN-MNNFA4HT-420317B2",
+    "BlockIndex": 0,
+    "Timestamp": "2026-04-06T16:46:32.513Z",
+    "CitizenHash": "ba34f9b0d974687c8493dbef1e60fbedf0124002c6a33d9509004bb9a0315608",
+    "Scheme": "EXPLOIT",
+    "Amount": 9999999,
+    "Region_Code": "R01",
+    "Income_Tier": "UNKNOWN",
+    "GatesPassed": [],
+    "Status": "REJECTED",
+    "RejectionReason": "BUDGET_EXPLOIT — Attempted withdrawal exceeds remaining budget",
+    "PreviousHash": "0000000000000000",
+    "CurrentHash": "18d4ac137d49852e9393f4dfd1d7f4c753fa7700920200916bbe35ab32ba4b9a",
+    "QuantumProof": "LATTICE_0x4258A726C36CD68413B145EC_PQC_SIGNED",
+    "LatticeRoot": "MTL_0xFEA3AA2AB5",
+    "EnclaveSignature": "SIG_0xDF85C6D0_TEE",
+    "EnclaveID": "INTEL_SGX_PHASE_1"
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "status": "ACTIVE",
+  "budget_remaining": 1000000,
+  "total_transactions": 0,
+  "approved_count": 0,
+  "rejected_count": 0,
+  "frozen_reason": null,
+  "fraud_stats": {
+    "duplicate_attempts": 0,
+    "replay_attempts": 8,
+    "fake_identity_attempts": 5,
+    "frequency_violations": 1,
+    "budget_exploits": 0,
+    "tamper_attempts": 6
+  },
+  "region_fraud": {
+    "R01": 11,
+    "R02": 0,
+    "R03": 0,
+    "R04": 0,
+    "R05": 0
+  }
+}
