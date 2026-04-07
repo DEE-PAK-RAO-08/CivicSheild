@@ -20,16 +20,23 @@ Every claim must pass three rigorous cryptographic and logic gates:
 2.  **Gate 2: Budget (Austerity)** — Checks real-time budget availability using a **Greedy Knapsack Optimization** to prioritize low-income tiers during austerity.
 3.  **Gate 3: Frequency (Temporal)** — Prevents "velocity attacks" using a **Finite State Machine (FSM)** and **Z-Score** surge detection.
 
-### 3. 🧠 Neural Fraud Intelligence (XAI)
+### 3. 🛡️ Secure Authentication & Operative Protocol (PROG-AUTH)
+- **Firebase Core**: Implements a high-security lock on the entire application using **Firebase Authentication**.
+- **reCAPTCHA v3**: Armed with an anti-bot protocol integrated directly into the login/registration forms to prevent automated credential stuffing.
+- **Gmail OTP Verification**: A custom cybersecurity simulation that requires a 6-digit dynamic OTP (One-Time Password) dispatched to `@gmail.com` addresses for new operative clearance.
+- **Google OAuth 2.0**: Secure Google SSO integration for seamless, verified access.
+- **Session Persistence**: Implements "Remember Me" logic via `localStorage` to pre-fill operative credentials for rapid re-authentication.
+
+### 4. 🧠 Neural Fraud Intelligence (XAI)
 - **Identity Ring Detection**: Uses **Union-Find (DSU)** to detect clusters of suspicious identities sharing common traits or regional surges.
 - **Statistical Forensics**: Implements **Benford's Law** to detect anomalous disbursement amounts that deviate from natural logarithmic distributions.
 - **Temporal Surge Analysis**: Uses **EWMA (Exponentially Weighted Moving Average)** and **Shannon Entropy** to distinguish between natural surges and coordinated bot attacks.
 
-### 4. 🔬 Forensic Lab & Attack Simulation
+### 5. 🔬 Forensic Lab & Attack Simulation
 - **Attack Lab**: A controlled environment to execute **Direct Ledger Modifications**, **Phantom Identity Injections**, and **Concurrency Stress Tests** (God Mode).
 - **Forensic Profiling**: Automatically generates threat profiles including **Jaccard Similarity** scores and **Attack Classification** (e.g., "Botnet Surge", "Targeted Infiltration").
 
-### 5. 📱 Premium Mobile-First Design
+### 6. 📱 Premium Mobile-First Design
 - **Aesthetics**: Dark-mode cybersecurity aesthetic with **Glassmorphism**, vibrant HSL-tailored accents, and smooth micro-animations.
 - **Responsiveness**: Fully optimized for mobile view with custom responsive grids and touch-friendly interactive elements.
 
@@ -39,6 +46,7 @@ Every claim must pass three rigorous cryptographic and logic gates:
 
 -   **Frontend**: React 19 + Vite 6 + Framer Motion (Cinematic Animations).
 -   **Security Engine**: Node.js + Express + SHA-256 Chained Blockchain logic.
+-   **Authentication**: Firebase SDK + Google reCAPTCHA.
 -   **Intelligence Layer**: Custom JavaScript implementations of Union-Find, Knapsack, and Statistical Forensics.
 -   **Visualization**: 
     -   **Three.js / React-Force-Graph**: 3D Ledger & Network Mapping.
@@ -106,6 +114,16 @@ The app will be live at `http://localhost:5173`.
 
 ## 🎮 The "Winner's Demo" Walkthrough
 
+### Part 0: Secure Authentication (Operative Protocol)
+1.  Launch the app. Experience the cinematic **3.2s Splash Screen**.
+2.  The system locks into the **Secure Authentication Protocol**.
+3.  **Registration**: Click "Request Clearance Registration". 
+    *   Enter a `@gmail.com` address.
+    *   Solve the **reCAPTCHA** anti-bot validation.
+    *   Click **Dispatch OTP**.
+    *   Enter the 6-digit code (Check browser console `F12` for the demo code).
+4.  **Google SSO**: Demonstrate the one-click **Google OAuth** login bypass.
+
 ### Part 1: The Trust Pipeline
 1.  Navigate to **Submit Claim**.
 2.  Input a 12-digit Citizen ID (or pick from the dropdown).
@@ -127,6 +145,8 @@ The app will be live at `http://localhost:5173`.
 ---
 
 ## 🌟 Future Roadmap
+- [x] **Firebase Integration**: Multi-factor authentication & Google SSO.
+- [x] **Anti-Bot Protocol**: Integrated reCAPTCHA validation.
 - [ ] **Quantum Integration**: Transitioning from SHA-256 to CRYSTALS-Dilithium signatures.
 - [ ] **ZKP-Mobile**: Zero-Knowledge Proof generation on-device for total privacy.
 - [ ] **Sovereign Mesh**: Distributed ledger across multiple regional government nodes.
