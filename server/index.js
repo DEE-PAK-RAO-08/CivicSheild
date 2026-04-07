@@ -84,6 +84,20 @@ app.get('/api/admin/citizens', AdminController.getCitizens);
 app.get('/api/admin/citizen-ids', AdminController.getCitizenIds);
 app.get('/api/admin/fraud-report', AdminController.getFraudReport);
 
+// Track 1 — Fraud Cluster Scanning (Union-Find DSU + Benford's Law)
+app.get('/api/admin/fraud-rings', AdminController.getFraudRings);
+app.post('/api/admin/fraud-scan', AdminController.fraudScan);
+app.get('/api/admin/fraud-rings/export', AdminController.fraudRingsExport);
+
+// Track 2 — Austerity Mode (Greedy Knapsack Priority Queue)
+app.post('/api/admin/austerity', AdminController.activateAusterity);
+app.get('/api/admin/austerity-report', AdminController.getAusterityReport);
+
+// Track 3 — Attack Timeline (EWMA + FSM + Jaccard)
+app.get('/api/admin/attack-timeline', AdminController.getAttackTimeline);
+app.get('/api/admin/attack-timeline/export', AdminController.getAttackTimelineExport);
+app.get('/api/admin/surge-status', AdminController.getSurgeStatus);
+
 // ── Attack Simulation Lab (Hackathon Demo) ──
 app.post('/api/attacks/tamper-ledger', AttackController.tamperLedger);
 app.post('/api/attacks/fake-identity', AttackController.fakeIdentity);
@@ -117,14 +131,14 @@ app.get('*', (req, res) => {
 });
 
 // ── Start Server ──
-app.listen(config.PORT, () => {
+app.listen(config.PORT, '0.0.0.0', () => {
   console.log('');
   console.log('╔══════════════════════════════════════════════════════════╗');
   console.log('║                                                          ║');
   console.log('║   🛡️  CivicShield v2.0 — Tamper-Proof Welfare System     ║');
   console.log('║   Sequential Validation Engine Online                     ║');
   console.log('║                                                          ║');
-  console.log(`║   🌐 Server: http://localhost:${config.PORT}                       ║`);
+  console.log(`║   🌐 Server: http://127.0.0.1:${config.PORT}                       ║`);
   console.log(`║   💰 Budget: ₹${config.INITIAL_BUDGET.toLocaleString('en-IN').padEnd(15)}                    ║`);
   console.log(`║   👥 Citizens: ${String(DataLoader.getCount()).padEnd(5)} loaded from XLSX             ║`);
   console.log('║   🔒 SHA-256 Hashing: Active                             ║');

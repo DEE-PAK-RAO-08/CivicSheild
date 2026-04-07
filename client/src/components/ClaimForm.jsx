@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const API = import.meta.env.PROD ? '' : 'http://localhost:5000';
+const API = import.meta.env.PROD ? '' : 'http://127.0.0.1:5000';
 
 export default function ClaimForm({ systemStatus }) {
   const [citizens, setCitizens] = useState([]);
@@ -159,22 +159,12 @@ export default function ClaimForm({ systemStatus }) {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <div>
+          <div className="form-responsive-grid">
+            <div className="field-group">
               <label>SCHEME ELIGIBILITY</label>
               <div style={{ position: 'relative' }}>
                 <div
-                  style={{
-                    backgroundColor: 'rgba(0,0,0,0.4)',
-                    border: '1px solid var(--border)',
-                    padding: '0.8rem 1rem',
-                    borderRadius: 'var(--radius-sm)',
-                    color: form.scheme ? '#fff' : 'var(--text-3)',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                  }}
+                  className="custom-select"
                   onClick={() => setSchemeDropdownOpen(!schemeDropdownOpen)}
                 >
                   {form.scheme ? form.scheme : 'Select Scheme'}
@@ -187,53 +177,30 @@ export default function ClaimForm({ systemStatus }) {
                       initial={{ opacity: 0, y: -10, scaleY: 0.9 }}
                       animate={{ opacity: 1, y: 0, scaleY: 1 }}
                       exit={{ opacity: 0, y: -10, scaleY: 0.9 }}
-                      transition={{ duration: 0.2, ease: "easeOut" }}
-                      style={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: 0,
-                        width: '100%',
-                        backgroundColor: '#070b19',
-                        border: '1px solid var(--cyan)',
-                        borderTop: 'none',
-                        borderRadius: '0 0 var(--radius-sm) var(--radius-sm)',
-                        boxShadow: '0 10px 30px rgba(0, 229, 255, 0.2)',
-                        zIndex: 9999,
-                        transformOrigin: 'top'
-                      }}
+                      className="dropdown-menu"
                     >
                       {[
                         { val: 'Health', label: 'Health (₹5,000)' },
                         { val: 'Pension', label: 'Pension (₹2,000)' },
                         { val: 'Food', label: 'Food (₹1,000)' }
                       ].map((s, i) => (
-                        <motion.div
+                        <div
                           key={s.val}
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: i * 0.05 }}
-                          style={{
-                            padding: '0.8rem 1rem',
-                            cursor: 'pointer',
-                            borderBottom: '1px solid rgba(255,255,255,0.05)',
-                            color: 'var(--text-1)'
-                          }}
-                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 229, 255, 0.1)'}
-                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                          className="dropdown-item"
                           onClick={() => {
                             setForm({ ...form, scheme: s.val });
                             setSchemeDropdownOpen(false);
                           }}
                         >
                           {s.label}
-                        </motion.div>
+                        </div>
                       ))}
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
             </div>
-            <div>
+            <div className="field-group">
               <label>DISBURSEMENT AMOUNT (₹)</label>
               <input
                 type="number"
@@ -337,12 +304,7 @@ export default function ClaimForm({ systemStatus }) {
                 )}
 
                 {result.approved && result.transaction && (
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '0.8rem',
-                    fontSize: '0.85rem'
-                  }}>
+                  <div className="txn-details-grid">
                     <div className="mono"><strong style={{ color: 'var(--text-3)' }}>TXN_ID:</strong> {result.transaction.id}</div>
                     <div className="mono"><strong style={{ color: 'var(--text-3)' }}>CITIZEN:</strong> {result.citizenHash}</div>
                     <div className="mono"><strong style={{ color: 'var(--text-3)' }}>BLOCK:</strong> {result.transaction.currentHash}</div>

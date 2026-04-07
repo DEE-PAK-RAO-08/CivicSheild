@@ -8,6 +8,7 @@ const XLSX = require('xlsx');
 const path = require('path');
 const config = require('../config');
 const CryptoService = require('./cryptoService');
+const SystemState = require('./systemState');
 
 // Runtime registry — mutable during session
 let citizenRegistry = [];
@@ -23,18 +24,23 @@ class DataLoader {
    */
   static load() {
     const filePath = path.join(__dirname, '..', 'data', config.DATASET_FILENAME);
+    const fraudFilePath = path.join(__dirname, '..', 'data', 'Civic_Shield_Fraud_Cluster.xlsx');
     
-    console.log(`[DataLoader] Loading dataset from: ${filePath}`);
+    console.log(`[DataLoader] Loading main dataset from: ${filePath}`);
     
+    // --- Load Main Dataset ---
     const workbook = XLSX.readFile(filePath);
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-    const rawData = XLSX.utils.sheet_to_json(sheet);
+    const rawData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
 
     console.log(`[DataLoader] Raw rows parsed: ${rawData.length}`);
 
+    // Track regions for fraud clustering
+    const hashToRegions = new Map();
+
     citizenRegistry = rawData.map((row, index) => {
-      const citizenId = String(row['Citizen_ID'] || row['Citizen_ID '] || '').trim();
+      // Normalize: Strip all whitespace and non-digit characters
+      const rawId = String(row['Citizen_ID'] || row['Citizen_ID '] || '');
+      const citizenId = rawId.replace(/\D/g, '');
       const citizenHash = CryptoService.generateCitizenHash(citizenId);
 
       // Parse Last_Claim_Date from DD-MM-YYYY or Excel serial
@@ -60,6 +66,8 @@ class DataLoader {
         aadhaarLinked = aadhaarLinked.toUpperCase() === 'TRUE';
       }
 
+      const regionCode = (row['Region_Code'] || '').trim();
+
       const record = {
         _index: index,
         CitizenHash: citizenHash,
@@ -67,7 +75,7 @@ class DataLoader {
         Scheme_Eligibility: (row['Scheme_Eligibility'] || '').trim(),
         Scheme_Amount: Number(row['Scheme_Amount'] || 0),
         Last_Claim_Date: lastClaimDate,
-        Region_Code: (row['Region_Code'] || '').trim(),
+        Region_Code: regionCode,
         Account_Status: (row['Account_Status'] || '').trim(),
         Aadhaar_Linked: aadhaarLinked === true || aadhaarLinked === 'TRUE',
         Claim_Count: Number(row['Claim_Count'] || 0)
@@ -76,8 +84,60 @@ class DataLoader {
       hashToIndex.set(citizenHash, index);
       idToHash.set(citizenId, citizenHash);
 
+      // Track the region for this hash
+      if (!hashToRegions.has(citizenHash)) hashToRegions.set(citizenHash, new Set());
+      if (regionCode) hashToRegions.get(citizenHash).add(regionCode);
+
       return record;
     });
+
+    // --- Load Fraud Cluster Dataset ---
+    try {
+      console.log(`[DataLoader] Loading fraud cluster dataset: ${fraudFilePath}`);
+      const fraudWorkbook = XLSX.readFile(fraudFilePath);
+      const fraudData = XLSX.utils.sheet_to_json(fraudWorkbook.Sheets[fraudWorkbook.SheetNames[0]]);
+      
+      fraudData.forEach(row => {
+        const rawId = String(row['Citizen_ID'] || row['Citizen_ID '] || '');
+        const citizenId = rawId.replace(/\D/g, '');
+        if (!citizenId) return;
+        
+        const citizenHash = CryptoService.generateCitizenHash(citizenId);
+        const regionCode = (row['Region_Code'] || '').trim();
+        
+        if (!hashToRegions.has(citizenHash)) hashToRegions.set(citizenHash, new Set());
+        if (regionCode) hashToRegions.get(citizenHash).add(regionCode);
+      });
+      console.log(`[DataLoader] Appended ${fraudData.length} fraud cluster rows for region mapping.`);
+    } catch (err) {
+      console.log(`[DataLoader] Could not load Fraud Cluster dataset. Proceeding without it. (${err.message})`);
+    }
+
+    // --- Analyze Cross-Region Duplicates ---
+    const clusters = {};
+    let ringCount = 0;
+    
+    hashToRegions.forEach((regions, hash) => {
+      if (regions.size > 1) { // Same identity appears in more than 1 region
+        SystemState.addFraudHash(hash);
+        
+        // Find existing record to get details for the report
+        const mainRecord = this.findByHash(hash);
+        clusters[`CLUSTER-${Date.now()}-${ringCount}`] = {
+          hash: CryptoService.maskHash(hash),
+          fullHash: hash,
+          regions: Array.from(regions),
+          amountAtRisk: mainRecord ? mainRecord.Scheme_Amount : 0,
+          scheme: mainRecord ? mainRecord.Scheme_Eligibility : 'Unknown'
+        };
+        ringCount++;
+      }
+    });
+
+    if (ringCount > 0) {
+      SystemState.setFraudClusters(clusters);
+      console.log(`[DataLoader] 🚨 WARNING: Detected ${ringCount} Cross-Region Duplicate Identity Rings!`);
+    }
 
     console.log(`[DataLoader] ✅ Loaded ${citizenRegistry.length} citizens into registry`);
     console.log(`[DataLoader] Sample schemes: ${[...new Set(citizenRegistry.map(c => c.Scheme_Eligibility))].join(', ')}`);

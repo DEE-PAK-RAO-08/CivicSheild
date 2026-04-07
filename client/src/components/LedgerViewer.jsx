@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import ForceGraph3D from 'react-force-graph-3d';
 import * as THREE from 'three';
 
-const API = import.meta.env.PROD ? '' : 'http://localhost:5000';
+const API = import.meta.env.PROD ? '' : 'http://127.0.0.1:5000';
 
 export default function LedgerViewer() {
   const [ledger, setLedger] = useState([]);
@@ -202,7 +202,7 @@ export default function LedgerViewer() {
                 </span>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginTop: '0.8rem', fontSize: '0.85rem' }}>
+              <div className="txn-details-grid" style={{ marginTop: '0.8rem' }}>
                 <div><span style={{ color: 'var(--text-3)' }}>Citizen:</span> <span className="mono">{block.CitizenHash_Display}</span></div>
                 <div><span style={{ color: 'var(--text-3)' }}>Region:</span> {block.Region_Code}</div>
                 <div style={{ color: 'var(--green)' }}>

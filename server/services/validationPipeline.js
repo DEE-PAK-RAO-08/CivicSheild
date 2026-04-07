@@ -8,6 +8,8 @@ const config = require('../config');
 const CryptoService = require('./cryptoService');
 const DataLoader = require('./dataLoader');
 const EventStream = require('./eventStream');
+const SystemState = require('./systemState');
+const FraudEngine = require('./fraudEngine');
 
 // ── Active Processing Queue (for duplicate detection) ──
 const activeQueue = new Set();
@@ -19,12 +21,14 @@ const replayCache = new Map();
 // ── Transaction Log (approved + rejected for stats) ──
 let transactionLog = [];
 
+const ClaimQueue = require('./claimQueue');
+
 class ValidationPipeline {
   /**
    * Run the full 3-gate sequential validation pipeline
    * Returns detailed result with gate status
    */
-  static validate(citizenId, scheme, amount) {
+  static async validate(citizenId, scheme, amount) {
     const citizenHash = CryptoService.generateCitizenHash(String(citizenId).trim());
     const timestamp = new Date().toISOString();
 
@@ -104,6 +108,19 @@ class ValidationPipeline {
       result.rejectionReason = 'CITIZEN_NOT_FOUND';
       result.logEntry = `REJECTED | CitizenHash: ${CryptoService.maskHash(citizenHash)} | Gate: 1 | Reason: Citizen_ID not found in registry | Timestamp: ${timestamp}`;
       EventStream.broadcast('GATE1_FAILED', { reason: 'CITIZEN_NOT_FOUND', citizenHash: CryptoService.maskHash(citizenHash) });
+      activeQueue.delete(citizenHash);
+      this._recordTransaction(result);
+      return result;
+    }
+
+    // Condition 1.5: Cross-Region Duplicate Identity Ring
+    if (SystemState.isFraudRingHash(citizenHash)) {
+      result.gates.gate1.reason = 'IDENTITY_RING_DETECTED';
+      result.gates.gate1.failedField = 'Citizen_ID';
+      result.rejectionGate = 1;
+      result.rejectionReason = 'IDENTITY_RING_DETECTED';
+      result.logEntry = `REJECTED | CitizenHash: ${CryptoService.maskHash(citizenHash)} | Gate: 1 | Reason: IDENTITY_RING_DETECTED (Cross-region anomaly) | Timestamp: ${timestamp}`;
+      EventStream.broadcast('GATE1_FAILED', { reason: 'IDENTITY_RING_DETECTED', citizenHash: CryptoService.maskHash(citizenHash) });
       activeQueue.delete(citizenHash);
       this._recordTransaction(result);
       return result;
@@ -191,21 +208,60 @@ class ValidationPipeline {
     });
 
     // ══════════════════════════════════════════
+    // INTER-GATE QUEUE (HACKATHON TRACK 2 — MEDIUM)
+    // Here we pause and buffer between Gate 1 and Gate 2
+    // ══════════════════════════════════════════
+    await new Promise(resolve => {
+      ClaimQueue.enqueue({
+        citizenHash,
+        citizenData: result.citizenData,
+        scheme,
+        amount,
+        timestamp
+      }, resolve);
+    });
+
+    // Re-check System State in case austerity was triggered or system was frozen while in queue
+    if (!SystemState.isOperational()) {
+       result.rejectionGate = 2;
+       result.rejectionReason = `SYSTEM_${SystemState.getStatus()}`;
+       result.logEntry = `REJECTED | CitizenHash: ${CryptoService.maskHash(citizenHash)} | Gate: Queue | Reason: System state changed to ${SystemState.getStatus()} while in queue | Timestamp: ${timestamp}`;
+       activeQueue.delete(citizenHash);
+       this._recordTransaction(result);
+       return result;
+    }
+
+    // ══════════════════════════════════════════
     // GATE 2 — BUDGET INTEGRITY CHECK
     // Budget decremented ONLY after full 3-gate approval
     // ══════════════════════════════════════════
     EventStream.broadcast('GATE2_START', { citizenHash: CryptoService.maskHash(citizenHash) });
 
-    const SystemState = require('./systemState');
     const budgetRemaining = SystemState.getBudget();
 
     if (budgetRemaining - Number(amount) < 0) {
-      result.gates.gate2.reason = 'BUDGET_INSUFFICIENT';
-      result.rejectionGate = 2;
-      result.rejectionReason = `BUDGET_INSUFFICIENT: ₹${budgetRemaining} remaining, ₹${amount} requested`;
-      result.logEntry = `REJECTED | CitizenHash: ${CryptoService.maskHash(citizenHash)} | Gate: 2 | Reason: BUDGET_INSUFFICIENT (₹${budgetRemaining} remaining, ₹${amount} requested) | Timestamp: ${timestamp}`;
+      if (SystemState.getAusterityStats().active) {
+        result.rejectionReason = 'AUSTERITY_BUDGET_EXHAUSTED';
+        // Record in austerity report
+        SystemState.recordAusterityRejection({
+          citizenHash,
+          maskedHash: CryptoService.maskHash(citizenHash),
+          incomeTier: citizen.Income_Tier,
+          amount: Number(amount),
+          scheme,
+          region: citizen.Region_Code,
+          reason: 'AUSTERITY_BUDGET_EXHAUSTED'
+        });
+        if (budgetRemaining <= 0) {
+          SystemState.freeze('BUDGET_EXHAUSTED');
+        }
+      } else {
+        result.rejectionReason = `BUDGET_INSUFFICIENT: ₹${budgetRemaining} remaining, ₹${amount} requested`;
+      }
+      
+      result.logEntry = `REJECTED | CitizenHash: ${CryptoService.maskHash(citizenHash)} | Gate: 2 | Reason: ${result.rejectionReason} | Timestamp: ${timestamp}`;
       EventStream.broadcast('GATE2_FAILED', {
-        reason: 'BUDGET_INSUFFICIENT',
+        reason: result.rejectionReason,
         remaining: budgetRemaining,
         requested: amount
       });
@@ -280,6 +336,18 @@ class ValidationPipeline {
     SystemState.updateBudget(newBudget);
     SystemState.incrementApproved();
 
+    // Track austerity approvals
+    if (SystemState.getAusterityStats().active) {
+      SystemState.recordAusterityApproval({
+        citizenHash,
+        maskedHash: CryptoService.maskHash(citizenHash),
+        incomeTier: citizen.Income_Tier,
+        amount: Number(amount),
+        scheme,
+        region: citizen.Region_Code
+      });
+    }
+
     // Check if budget is exactly ₹0 → auto-lock
     if (newBudget === 0) {
       SystemState.freeze('BUDGET_EXHAUSTED');
@@ -295,6 +363,9 @@ class ValidationPipeline {
       amount,
       budgetRemaining: newBudget
     });
+
+    // Run Fraud Anomaly Detection (Hard Track)
+    FraudEngine.analyze(result);
 
     // Remove from active queue
     activeQueue.delete(citizenHash);

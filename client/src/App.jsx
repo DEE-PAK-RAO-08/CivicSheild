@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import RippleGrid from './components/RippleGrid';
+import LightPillar from './components/LightPillar';
 import ClaimForm from './components/ClaimForm';
 import AdminPanel from './components/AdminPanel';
 import LedgerViewer from './components/LedgerViewer';
@@ -8,6 +8,9 @@ import RegistryViewer from './components/RegistryViewer';
 import AttackLab from './components/AttackLab';
 import EventStream from './components/EventStream';
 import AnalyticsDashboard from './components/AnalyticsDashboard';
+import Login from './components/Login';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from './firebase';
 
 const TABS = [
   { id: 'claim', label: 'Submit Claim', icon: '📋' },
@@ -39,31 +42,35 @@ function SplashScreen({ onFinish }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8 }}
     >
-      {/* Ripple Grid behind splash */}
+      {/* Background behind splash */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-        <RippleGrid
-          enableRainbow={false}
-          gridColor="#00e5ff"
-          rippleIntensity={0.06}
-          gridSize={12}
-          gridThickness={18}
-          mouseInteraction={true}
-          mouseInteractionRadius={1.5}
-          opacity={0.6}
+        <LightPillar
+          topColor="#5227FF"
+          bottomColor="#FF9FFC"
+          intensity={0.6}
+          rotationSpeed={0.25}
+          glowAmount={0.001}
+          pillarWidth={3}
+          pillarHeight={0.4}
+          noiseIntensity={0.5}
+          pillarRotation={25}
+          interactive={false}
+          mixBlendMode="screen"
+          quality="high"
         />
       </div>
 
-      <div style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
+      <div className="splash-content">
         <motion.div
           initial={{ scale: 0.3, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 1.2, ease: 'easeOut' }}
-          style={{ fontSize: '5rem', marginBottom: '1rem' }}
+          className="splash-icon"
         >
           🛡️
         </motion.div>
         <motion.h1
-          className="gradient-text"
+          className="splash-title gradient-text"
           initial={{ y: 40, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.9 }}
@@ -71,39 +78,26 @@ function SplashScreen({ onFinish }) {
           CIVICSHIELD
         </motion.h1>
         <motion.p
+          className="splash-subtitle cyan-sub"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.0 }}
-          style={{
-            color: '#4a6080',
-            fontFamily: 'Orbitron',
-            fontSize: '0.65rem',
-            letterSpacing: '6px',
-            marginTop: '0.5rem'
-          }}
         >
           SEQUENTIAL VALIDATION ENGINE v2.0
         </motion.p>
         <motion.div
           initial={{ opacity: 0, width: 0 }}
-          animate={{ opacity: 1, width: 300 }}
+          animate={{ opacity: 1, width: 'min(350px, 80vw)' }}
           transition={{ delay: 1.4, duration: 0.5 }}
-          className="loading-bar"
-          style={{ marginTop: '2.5rem', marginLeft: 'auto', marginRight: 'auto' }}
+          className="loading-bar-container"
         >
-          <div className="fill" />
+          <div className="loading-fill" />
         </motion.div>
         <motion.p
+          className="splash-status"
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.6 }}
+          animate={{ opacity: 1 }}
           transition={{ delay: 1.8 }}
-          style={{
-            color: '#4a6080',
-            fontSize: '0.7rem',
-            letterSpacing: '3px',
-            marginTop: '1rem',
-            fontFamily: 'Orbitron'
-          }}
         >
           INITIALIZING CRYPTOGRAPHIC PROTOCOLS...
         </motion.p>
@@ -116,11 +110,19 @@ function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [activeTab, setActiveTab] = useState('claim');
   const [systemStatus, setSystemStatus] = useState('ACTIVE');
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const fetchStatus = async () => {
       try {
-        const API = import.meta.env.PROD ? '' : 'http://localhost:5000';
+        const API = import.meta.env.PROD ? '' : 'http://127.0.0.1:5000';
         const res = await fetch(`${API}/api/admin/status`);
         const data = await res.json();
         if (data.status) setSystemStatus(data.status);
@@ -143,20 +145,45 @@ function App() {
         {showSplash && <SplashScreen onFinish={() => setShowSplash(false)} />}
       </AnimatePresence>
 
-      {!showSplash && (
+      {!showSplash && !user && (
+        <>
+          <div className="canvas-bg" style={{ pointerEvents: 'none' }}>
+            <LightPillar
+              topColor="#5227FF"
+              bottomColor="#FF9FFC"
+              intensity={0.4}
+              rotationSpeed={0.2}
+              glowAmount={0.001}
+              pillarWidth={3}
+              pillarHeight={0.4}
+              noiseIntensity={0.5}
+              pillarRotation={25}
+              interactive={false}
+              mixBlendMode="screen"
+              quality="high"
+            />
+          </div>
+          <Login />
+        </>
+      )}
+
+      {!showSplash && user && (
         <div className="app-shell">
-          {/* RippleGrid Background — reactive to system status */}
+          {/* Background Layers — reactive to system status */}
           <div className="canvas-bg" style={{ pointerEvents: 'auto' }}>
-            <RippleGrid
-              enableRainbow={false}
-              gridColor={gridColor}
-              rippleIntensity={systemStatus === 'FROZEN' ? 0.12 : 0.05}
-              gridSize={10}
-              gridThickness={15}
-              mouseInteraction={true}
-              mouseInteractionRadius={1.2}
-              opacity={systemStatus === 'FROZEN' ? 0.5 : 0.35}
-              glowIntensity={systemStatus === 'FROZEN' ? 0.2 : 0.1}
+            <LightPillar
+              topColor={systemStatus === 'FROZEN' ? '#ff1744' : '#5227FF'}
+              bottomColor={systemStatus === 'FROZEN' ? '#330000' : '#FF9FFC'}
+              intensity={0.8}
+              rotationSpeed={0.3}
+              glowAmount={0.001}
+              pillarWidth={3}
+              pillarHeight={0.4}
+              noiseIntensity={0.5}
+              pillarRotation={25}
+              interactive={false}
+              mixBlendMode="screen"
+              quality="high"
             />
           </div>
 
@@ -183,13 +210,22 @@ function App() {
               <div className="topbar-logo">
                 <span className="shield-icon">🛡️</span>
                 <div>
-                  <h1 className="gradient-text">CIVICSHIELD</h1>
-                  <div className="subtitle">TAMPER-PROOF WELFARE ENGINE</div>
+                  <h1 className="gradient-text brand-title">CIVICSHIELD</h1>
+                  <div className="subtitle brand-subtitle">TAMPER-PROOF WELFARE ENGINE</div>
                 </div>
               </div>
-              <div className={`status-pill ${statusClass}`}>
-                <span className="dot" />
-                {systemStatus}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                <div className={`status-pill ${statusClass}`}>
+                  <span className="dot" />
+                  {systemStatus}
+                </div>
+                <button 
+                  onClick={() => signOut(auth)} 
+                  className="btn" 
+                  style={{ padding: '0.4rem 0.8rem', fontSize: '0.7rem', height: 'auto', border: '1px solid var(--border)' }}
+                >
+                  LOGOUT
+                </button>
               </div>
             </header>
 

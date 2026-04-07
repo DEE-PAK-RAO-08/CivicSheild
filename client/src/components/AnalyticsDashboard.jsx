@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const API = import.meta.env.PROD ? '' : 'http://localhost:5000';
+const API = import.meta.env.PROD ? '' : 'http://127.0.0.1:5000';
 
 export default function AnalyticsDashboard() {
   const [summary, setSummary] = useState(null);

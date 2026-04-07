@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const API = import.meta.env.PROD ? '' : 'http://localhost:5000';
+const API = import.meta.env.PROD ? '' : 'http://127.0.0.1:5000';
 
 export default function AttackLab() {
   const [tamperIdx, setTamperIdx] = useState(0);
@@ -57,30 +57,22 @@ export default function AttackLab() {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem', alignItems: 'flex-end' }}>
-          <div>
-            <label style={{ color: 'var(--purple)' }}>CONCURRENT REQUEST VOLUME</label>
+        <div className="attack-grid-two">
+          <div className="field-group">
+            <label style={{ color: 'var(--purple)' }}>CONCURRENT VOLUME</label>
             <input
               type="number" min="10" max="1000"
               value={stressCount}
               onChange={e => setStressCount(e.target.value)}
-              style={{ borderColor: 'var(--purple)' }}
+              style={{ borderColor: 'var(--purple)', color: 'var(--purple)' }}
             />
           </div>
           <button
-            className="btn btn-primary"
-            style={{ 
-              height: '48px', 
-              fontSize: '0.8rem', 
-              background: 'var(--purple)', 
-              borderColor: 'var(--purple)', 
-              color: '#fff',
-              boxShadow: '0 0 15px rgba(179,136,255,0.4)'
-            }}
+            className="btn btn-primary attack-btn-purple"
             disabled={attacking}
             onClick={() => perform('stress-test', { count: parseInt(stressCount) })}
           >
-            {attacking && attackType === 'stress-test' ? '⏳ DEPLOYING BOTS...' : '🚀 INITIATE GOD MODE BARRAGE'}
+            {attacking && attackType === 'stress-test' ? '⌛ DEPLOYING...' : '🚀 INITIATE BARRAGE'}
           </button>
         </div>
       </motion.div>
@@ -101,8 +93,8 @@ export default function AttackLab() {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr', gap: '1rem', alignItems: 'flex-end' }}>
-          <div>
+        <div className="attack-grid">
+          <div className="field-group">
             <label>TARGET BLOCK</label>
             <input
               type="number" min="0"
@@ -110,7 +102,7 @@ export default function AttackLab() {
               onChange={e => setTamperIdx(e.target.value)}
             />
           </div>
-          <div>
+          <div className="field-group">
             <label>INJECTED AMOUNT (₹)</label>
             <input
               type="number"
@@ -119,8 +111,7 @@ export default function AttackLab() {
             />
           </div>
           <button
-            className="btn btn-danger"
-            style={{ height: '48px', fontSize: '0.8rem' }}
+            className="btn btn-danger attack-btn"
             disabled={attacking}
             onClick={() => perform('tamper-ledger', { blockIndex: parseInt(tamperIdx), newAmount: parseInt(tamperAmt) })}
           >

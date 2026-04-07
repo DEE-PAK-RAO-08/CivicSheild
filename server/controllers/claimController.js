@@ -33,7 +33,7 @@ class ClaimController {
       });
 
       // Run 3-gate validation pipeline
-      const result = ValidationPipeline.validate(citizenId, scheme, Number(amount));
+      const result = await ValidationPipeline.validate(citizenId, scheme, Number(amount));
 
       // If approved → append to immutable ledger
       let block = null;

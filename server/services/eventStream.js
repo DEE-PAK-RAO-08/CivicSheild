@@ -10,9 +10,10 @@ class EventStream {
 
   static addClient(res) {
     res.writeHead(200, {
+      'Content-Size': 'text/event-stream',
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
+      'X-Accel-Buffering': 'no',
       'Access-Control-Allow-Origin': '*'
     });
 
@@ -26,7 +27,13 @@ class EventStream {
 
     this.clients.push(res);
 
+    // Send heartbeat to keep connection alive every 30s
+    const heartbeat = setInterval(() => {
+      res.write(': keep-alive\n\n');
+    }, 30000);
+
     res.on('close', () => {
+      clearInterval(heartbeat);
       this.clients = this.clients.filter(c => c !== res);
     });
   }
