@@ -72,7 +72,7 @@ export default function Login() {
         console.log(`%c🔑 OTP CODE: ${newOtp}`, "color: #00ff9d; font-size: 1.2rem; font-weight: bold");
         console.log("%c=========================================", "color: #00e5ff");
         
-        setMessage(`A 6-digit Secure OTP has been dispatched to your Gmail. (Check Browser Console for the code)`);
+        setMessage(`OTP Dispatched. (DEMO MODE: Your OTP is ${newOtp})`);
         setStep('otp');
       }
     } catch (err) {
@@ -138,8 +138,8 @@ export default function Login() {
              onSubmit={handleVerifyOTP}
              className="login-form"
            >
-            <div className="auth-alert success" style={{ marginBottom: '1rem' }}>
-               <span>📩</span> Check your console! (F12) A secure OTP was sent.
+             <div className="auth-alert success" style={{ marginBottom: '1rem' }}>
+               <span>📩</span> {message || "Check your console! (F12) A secure OTP was sent."}
              </div>
              
              {error && <div className="auth-alert error"><span>🚨</span> {error}</div>}
