@@ -19,8 +19,11 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [captchaSolved, setCaptchaSolved] = useState(false);
 
-  // Initialize reCAPTCHA
+  // Initialize reCAPTCHA and load saved email
   useEffect(() => {
+    const savedEmail = localStorage.getItem('civicshield_saved_email');
+    if (savedEmail) setEmail(savedEmail);
+
     if (!window.recaptchaVerifier) {
       try {
         window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
@@ -56,6 +59,7 @@ export default function Login() {
     try {
       if (step === 'login') {
         await signInWithEmailAndPassword(auth, email, password);
+        localStorage.setItem('civicshield_saved_email', email);
       } else if (step === 'register') {
         if (!email.endsWith('@gmail.com')) {
           throw new Error('Restricted to @gmail.com addresses only.');
@@ -95,6 +99,7 @@ export default function Login() {
       // For this CyberSecurity demo, we validate against the dynamically generated OTP.
       if (otp === generatedOtp) { 
         await createUserWithEmailAndPassword(auth, email, password);
+        localStorage.setItem('civicshield_saved_email', email);
       } else {
         throw new Error('Invalid OTP code. Access Denied.');
       }
