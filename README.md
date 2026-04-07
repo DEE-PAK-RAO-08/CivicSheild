@@ -44,14 +44,47 @@ Every claim must pass three rigorous cryptographic and logic gates:
 
 ## 🛠️ High-Performance Tech Stack
 
--   **Frontend**: React 19 + Vite 6 + Framer Motion (Cinematic Animations).
--   **Security Engine**: Node.js + Express + SHA-256 Chained Blockchain logic.
--   **Authentication**: Firebase SDK + Google reCAPTCHA.
--   **Intelligence Layer**: Custom JavaScript implementations of Union-Find, Knapsack, and Statistical Forensics.
--   **Visualization**: 
-    -   **Three.js / React-Force-Graph**: 3D Ledger & Network Mapping.
-    -   **Recharts**: Real-time Intelligence Telemetry.
-    -   **D3-based Sankey**: Dynamic Budget Flow Analysis.
+### Frontend Hub (The Dashboard)
+- **Framework**: React 19 (Concurrent Mode) & Vite 6.
+- **Visuals**: Three.js (3D Ledger), Force-Graph (Network Security), Recharts (Telemetry).
+- **Styling**: Vanilla CSS3 + Glassmorphism + Dynamic CSS Grids.
+- **Animations**: Framer Motion (State-based layout transitions).
+- **Authentication**: Firebase SDK & Google reCAPTCHA v3.
+
+### Security Engine (The Backend)
+- **Runtime**: Node.js & Express.
+- **Cryptography**: SHA-256 (Hash-chaining) and crypto-secure salting.
+- **Forensics**: D3.js (Spatial data mapping) and native JS implementations of DSU (Union-Find).
+- **Database**: In-memory high-velocity caching with persistent storage from `CivicShield_Dataset.xlsx`.
+
+---
+
+## 📡 Security API Catalog (The Pipeline)
+
+CivicShield exposes a suite of protected endpoints for real-time welfare governance:
+
+### 1. 📋 Claims & Disbursement
+- `POST /api/claims/process`: Executes the 3-Gate Sequential Validation Pipeline.
+- `GET /api/claims/history`: Forensic audit of all recent claim attempts.
+
+### 2. ⛓️ Ledger Auditing
+- `GET /api/ledger`: Retrieves the full immutable hash-linked blockchain.
+- `GET /api/ledger/verify`: Triggers a total chain integrity sweep (detects tampers).
+- `GET /api/ledger/:id`: Deep-inspect a specific disbursement block.
+
+### 3. 🛡️ System Control (Kill-Switch)
+- `GET /api/admin/status`: Real-time system health and budget status.
+- `POST /api/admin/pause/resume`: Master switches for emergency halting.
+- `POST /api/admin/reset`: Complete system wipe and budgetary re-initialization.
+
+### 4. 🧠 Intelligence & Fraud (XAI)
+- `GET /api/admin/fraud-rings`: Scans for identity clusters using Union-Find (DSU).
+- `GET /api/admin/SURGE-status`: Temporal surge analysis via EWMA (Z-Score).
+- `GET /api/analytics/region-heatmap`: Geographical disbursement intensity mapping.
+
+### 5. 🧪 The Attack Lab (Demo)
+- `POST /api/attacks/tamper-ledger`: Manually inject unauthorized data into a block.
+- `POST /api/attacks/fake-identity`: Test the 3-Gate pipeline against botnet surges.
 
 ---
 
