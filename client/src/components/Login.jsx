@@ -76,7 +76,12 @@ export default function Login() {
         setStep('otp');
       }
     } catch (err) {
-      setError(err.message.replace('Firebase:', '').trim());
+      const errMsg = err.message || '';
+      if (errMsg.includes('email-already-in-use')) {
+        setError('ACCESS DENIED: Operative email already registered in the central database.');
+      } else {
+        setError(errMsg.replace('Firebase:', '').trim());
+      }
     } finally {
       setLoading(false);
     }
@@ -94,7 +99,12 @@ export default function Login() {
         throw new Error('Invalid OTP code. Access Denied.');
       }
     } catch (err) {
-      setError(err.message.replace('Firebase:', '').trim());
+      const errMsg = err.message || '';
+      if (errMsg.includes('email-already-in-use')) {
+        setError('ACCESS DENIED: Operative email already registered in the central database.');
+      } else {
+        setError(errMsg.replace('Firebase:', '').trim());
+      }
     } finally {
       setLoading(false);
     }
@@ -138,11 +148,33 @@ export default function Login() {
              onSubmit={handleVerifyOTP}
              className="login-form"
            >
-             <div className="auth-alert success" style={{ marginBottom: '1rem' }}>
-               <span>📩</span> {message || "Check your console! (F12) A secure OTP was sent."}
-             </div>
+             <AnimatePresence>
+               <motion.div 
+                 initial={{ opacity: 0, y: -15, scale: 0.95 }}
+                 animate={{ opacity: 1, y: 0, scale: 1 }}
+                 exit={{ opacity: 0, y: -15, scale: 0.95 }}
+                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                 className="auth-alert success" 
+                 style={{ marginBottom: '1rem' }}
+               >
+                 <span>📩</span> {message || "Check your console! (F12) A secure OTP was sent."}
+               </motion.div>
+             </AnimatePresence>
              
-             {error && <div className="auth-alert error"><span>🚨</span> {error}</div>}
+             <AnimatePresence>
+               {error && (
+                 <motion.div 
+                   initial={{ opacity: 0, x: -10 }}
+                   animate={{ opacity: 1, x: 0 }}
+                   exit={{ opacity: 0, x: 10 }}
+                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                   className="auth-alert error"
+                   style={{ marginBottom: '1rem' }}
+                 >
+                   <span>🚨</span> {error}
+                 </motion.div>
+               )}
+             </AnimatePresence>
  
              <div className="field-group">
                <label>ENTER 6-DIGIT OTP</label>
@@ -171,17 +203,33 @@ export default function Login() {
               onSubmit={handleAuth}
               className="login-form"
             >
-              {error && (
-                <div className="auth-alert error">
-                  <span>🚨</span> {error}
-                </div>
-              )}
+              <AnimatePresence>
+                {error && (
+                  <motion.div 
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 10 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                    className="auth-alert error"
+                  >
+                    <span>🚨</span> {error}
+                  </motion.div>
+                )}
+              </AnimatePresence>
               
-              {message && (
-                <div className="auth-alert success">
-                  <span>✅</span> {message}
-                </div>
-              )}
+              <AnimatePresence>
+                {message && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    className="auth-alert success"
+                  >
+                    <span>✅</span> {message}
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               <div className="field-group">
                 <label>GMAIL ADDRESS</label>
